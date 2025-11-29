@@ -1,0 +1,225 @@
+================================================================================
+        BRAIN TUMOR CLASSIFICATION - MODEL RESULTS SUMMARY REPORT
+================================================================================
+
+Generated: November 29, 2025
+Project: Brain Tumor Classification Using Deep Learning
+
+================================================================================
+                              DATASET OVERVIEW
+================================================================================
+
+Original Dataset:
+  - Tumorous (Yes): 23 images
+  - Non-tumorous (No): 35 images
+  - Total: 58 images
+
+After Augmentation:
+  - Tumorous (Yes): 138 images
+  - Non-tumorous (No): 315 images
+  - Total: 453 images
+
+Class Imbalance Ratio: 1:2.28 (tumor to non-tumor)
+
+================================================================================
+                     MODEL 1: VGG19 BASELINE
+================================================================================
+
+Source File: brain_tumor_image_prediction_vgg19.ipynb
+
+Architecture Details:
+  - Base Model: VGG19 (pre-trained on ImageNet)
+  - Feature Extractor: Frozen VGG19 convolutional layers
+  - Classifier: Custom fully connected layers
+  - Input Size: 224 x 224 x 3
+
+Model Parameters:
+  - Total Parameters: 140,946,370 (537.67 MB)
+  - Trainable Parameters: 120,921,986 (461.28 MB)
+  - Non-trainable Parameters: 20,024,384 (76.39 MB)
+
+Training Configuration:
+  - Optimizer: Adam/SGD
+  - Loss Function: Cross-Entropy
+  - Epochs: 15
+  - Early Stopping: Yes
+
+Data Augmentation Applied:
+  - Rotation: ±10°
+  - Width/Height Shift: 10%
+  - Shear: 10%
+  - Brightness: [0.3, 1.0]
+  - Horizontal & Vertical Flips
+
+Results:
+  - Validation Accuracy: 100%
+  - Convergence: Achieved 100% accuracy by epoch 2
+  - Training Loss: Decreased from 0.21 to near 0 within 3 epochs
+
+================================================================================
+                     MODEL 2: SwinV2-Large
+================================================================================
+
+Source File: Brain_Tumor_Swinv2_large.ipynb
+
+Architecture Details:
+  - Model: swinv2_large_window12to16_192to256.ms_in22k_ft_in1k
+  - Pre-trained: ImageNet-22K, fine-tuned on ImageNet-1K
+  - Window Size: 12 (training) to 16 (fine-tuning)
+  - Input Size: 256 x 256 x 3
+
+Training Configuration:
+  - Optimizer: AdamW
+  - Learning Rate: 1e-5
+  - Batch Size: 4
+  - Max Epochs: 50
+  - Early Stopping Patience: 4 epochs
+  - Loss Function: Cross-Entropy
+
+Data Split:
+  - Training: 80 samples (29 yes, 51 no)
+  - Validation: 17 samples (6 yes, 11 no)
+  - Test: 19 samples (7 yes, 12 no)
+
+Training Progress:
+  - Epoch 1: Train Loss: 0.5642, Val Acc: 82.35%
+  - Epoch 2: Train Loss: 0.4332, Val Acc: 94.12%
+  - Epoch 3: Train Loss: 0.2540, Val Acc: 100% (Best Model)
+  - Epoch 4: Train Loss: 0.1237, Val Acc: 94.12%
+  - Epoch 5: Train Loss: 0.1776, Val Acc: 100%
+  - Epoch 6: Train Loss: 0.0953, Val Acc: 94.12%
+  - Epoch 7: Train Loss: 0.1990, Val Acc: 88.24% (Early Stopping Triggered)
+
+Training Time: 79.97 seconds
+
+TEST SET RESULTS:
+  ┌─────────────────────────────────────────────────────────────┐
+  │  Test Accuracy: 100.00%                                     │
+  │  F1 Score: 1.0000                                           │
+  └─────────────────────────────────────────────────────────────┘
+
+Classification Report:
+                precision    recall  f1-score   support
+          no       1.00      1.00      1.00        12
+         yes       1.00      1.00      1.00         7
+    accuracy                           1.00        19
+   macro avg       1.00      1.00      1.00        19
+weighted avg       1.00      1.00      1.00        19
+
+ROC-AUC Scores:
+  - Class 'no': 1.00
+  - Class 'yes': 1.00
+
+Average Precision:
+  - Class 'no': 1.00
+  - Class 'yes': 1.00
+
+================================================================================
+                     MODEL 3: SwinV2-Tiny
+================================================================================
+
+Source File: Brain_Tumor_Swinv2_Tiny.ipynb
+
+Architecture Details:
+  - Model: swinv2_tiny_window8_256.ms_in1k
+  - Pre-trained: ImageNet-1K
+  - Window Size: 8
+  - Input Size: 256 x 256 x 3
+
+Training Configuration:
+  - Optimizer: AdamW
+  - Learning Rate: 1e-5
+  - Batch Size: 4
+  - Max Epochs: 50
+  - Early Stopping Patience: 4 epochs
+  - Loss Function: Cross-Entropy
+
+Data Split (with Enhanced Augmentation):
+  - Training: 320 samples (augmented from original)
+  - Validation: 17 samples
+  - Test: 19 samples
+
+Training Progress:
+  - Epoch 1: Train Loss: 0.4724, Train Acc: 80.31%, Val Acc: 94.12%
+  - Epoch 2: Train Loss: 0.2320, Train Acc: 91.25%, Val Acc: 100% (Best Model)
+  - Epoch 3: Train Loss: 0.1322, Train Acc: 94.37%, Val Acc: 100%
+  - Epoch 4: Train Loss: 0.0755, Train Acc: 98.12%, Val Acc: 100%
+  - Epoch 5: Train Loss: 0.0409, Train Acc: 98.75%, Val Acc: 100%
+  - Epoch 6: Train Loss: 0.0315, Train Acc: 98.75%, Val Acc: 100% (Early Stopping)
+
+Training Time: 155.03 seconds
+
+TEST SET RESULTS:
+  ┌─────────────────────────────────────────────────────────────┐
+  │  Test Accuracy: 94.74%                                      │
+  │  F1 Score: 0.9480                                           │
+  └─────────────────────────────────────────────────────────────┘
+
+Classification Report:
+                precision    recall  f1-score   support
+          no       1.00      0.92      0.96        12
+         yes       0.88      1.00      0.93         7
+    accuracy                           0.95        19
+   macro avg       0.94      0.96      0.94        19
+weighted avg       0.95      0.95      0.95        19
+
+ROC-AUC Score: 0.93
+
+Average Precision:
+  - Class 'no': 0.97
+  - Class 'yes': 0.83
+
+================================================================================
+                     COMPARATIVE SUMMARY
+================================================================================
+
+┌──────────────────┬────────────────┬────────────────┬────────────────┐
+│     Metric       │    VGG19       │  SwinV2-Large  │  SwinV2-Tiny   │
+├──────────────────┼────────────────┼────────────────┼────────────────┤
+│ Test Accuracy    │    100%*       │     100%       │    94.74%      │
+│ F1 Score         │    1.00*       │     1.00       │    0.948       │
+│ ROC-AUC          │    1.00*       │     1.00       │    0.93        │
+│ Training Time    │     N/A        │   79.97 sec    │   155.03 sec   │
+│ Parameters       │   140.9M       │    ~197M       │    ~28M        │
+│ Input Resolution │   224x224      │    256x256     │    256x256     │
+│ Epochs to Best   │      2         │      3         │      2         │
+├──────────────────┴────────────────┴────────────────┴────────────────┤
+│ * VGG19 results are validation accuracy (no separate test set)      │
+└─────────────────────────────────────────────────────────────────────┘
+
+================================================================================
+                     KEY FINDINGS
+================================================================================
+
+1. ALL MODELS ACHIEVED EXCELLENT PERFORMANCE:
+   - VGG19 and SwinV2-Large both achieved 100% accuracy
+   - SwinV2-Tiny achieved 94.74% test accuracy
+
+2. RAPID CONVERGENCE:
+   - All models reached best performance within 2-3 epochs
+   - Early stopping was effective in preventing overfitting
+
+3. MODEL EFFICIENCY:
+   - SwinV2-Tiny offers best parameter efficiency (~28M vs 140M+)
+   - SwinV2-Large had fastest training time (79.97 sec)
+
+4. PERFECT TUMOR DETECTION (SwinV2-Tiny):
+   - 100% recall for tumor class (no missed tumors)
+   - 88% precision for tumor class (some false positives)
+
+5. ENHANCED DATASET BENEFITS:
+   - SwinV2-Tiny with enhanced augmentation (320 samples) showed
+     excellent training dynamics with consistent 100% validation accuracy
+
+================================================================================
+                     RECOMMENDATIONS
+================================================================================
+
+- For HIGHEST ACCURACY: Use SwinV2-Large (100% test accuracy)
+- For RESOURCE-CONSTRAINED deployment: Use SwinV2-Tiny (94.74% with ~28M params)
+- For CLINICAL USE: Validate on larger, multi-center datasets
+- All models show strong Grad-CAM visualizations focusing on tumor regions
+
+================================================================================
+                           END OF REPORT
+================================================================================
